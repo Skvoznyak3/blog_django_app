@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+  <section class="py-5">
+      <div class="container">
+        <div class="row gy-5">
+
+          <!-- Latest Posts -->
+          <main class="col-lg-8"> 
+            <div class="container"><img class="img-fluid w-100 mb-4" src="{{ post.thumbnail.url }}" alt="...">
+              <ul class="list-inline mb-3">
+                 {% for cat in post.categories.all %}
+                     <li class="list-inline-item"><a class="text-uppercase" href="!#">{{ cat }}</a></li>
+                    {% endfor %}
+
+              </ul>
+
+              <h1 class="mb-4">{{ post.title }}<a href="!#"><i class="fa fa-bookmark-o"></i></a></h1>
+              <ul class="list-inline list-separated text-gray-500 mb-5">
+                <li class="list-inline-item"><a class="d-flex align-items-center flex-wrap text-reset" href="!#">
+                    <div class="avatar flex-shrink-0"><img class="img-fluid" src="{{ post.author.profile_picture.url }}" alt="..."></div><small>{{ post.author.user.username }}</small></a></li>
+                <li class="list-inline-item small"><i class="far fa-clock"></i> {{ post.timestamp|timesince }} ago</li>
+                <li class="list-inline-item small"><i class="far fa-comment"></i>{{ post.view_count }}</li>
+              </ul>
+              <div class="post-body">
+                <a>{{post.overview}}</a>
+                </div>
+                <p>quasi nam. Libero dicta eum recusandae, commodi, ad, autem at ea iusto numquam veritatis, officiis. Accusantium optio minus, voluptatem? Quia reprehenderit, veniam quibusdam provident, fugit iusto ullam voluptas neque soluta adipisci ad.</p>
+              </div>
+
+
+
+              <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row mb-5">
+                {% if post.previous_post %}
+                <a class="prev-post text-start d-flex align-items-center" href="{{ post.previous_post.get_absolute_url }}">
+                  <div class="icon prev"><i class="fas fa-angle-left"></i></div>
+                  <div class="text"><strong class="text-primary">Previous Post </strong>
+                    <h6>{{ post.previous_post.title }}</h6>
+                  </div>
+                </a>
+                {%endif%}
+                 {% if post.next_post %}
+                <a class="next-post text-end d-flex align-items-center justify-content-end" href="{{ post.next_post.get_absolute_url}}">
+                  <div class="text"><strong class="text-primary">Next Post </strong>
+                    <h6> {{post.next_post.title }}</h6>
+                  </div>
+                  <div class="icon next"><i class="fas fa-angle-right">   </i></div>
+                </a>
+                {%endif%}
+              </div>
+
+
+
+              <div class="mb-5">
+                <header>
+                  <h3 class="h6 mb-4">Post Comments<span class="fw-light text-gray-600 small ms-2">{{ post.comments.count }}</span></h3>
+                </header>
+                {% for comment in post.get_comments %}
+                 {% if comment.user.author %}
+                <div class="d-flex align-items-start"><img class="img-fluid rounded-circle flex-shrink-0" src="{{ comment.user.author.profile_picture.url }}" alt="..." width="50"/>
+                          {% else %}
+                <div class="d-flex align-items-start"><img class="img-fluid rounded-circle flex-shrink-0" src="{% static 'img/user.svg' %}" alt="..." width="50"/>
+                          {% endif %}
+                  <div class="pb-4 ms-3 border-bottom mb-4"><strong>{{ comment.user.username }}</strong>
+                    <p class="small text-gray-500">{{ comment.timestamp|timesince }} ago</p>
+                    <p class="mb-0 text-sm">{{ comment.content }}</p>
+                  </div>
+                </div>
+               {%endfor%}
+              </div>
+              <div class="mb-5">
+                 {% if request.user.is_authenticated %}
+
+                <header>
+                  <h3 class="h6 mb-4">Leave a reply</h3>
+                </header>
+                <form method="POST" action=".">
+                  {%csrf_token%}
+                  <div class="row gy-3">
+                    <div class="col-md-12">
+                      <div class="border-bottom">
+                        {{ form }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-secondary" type="submit">Submit Comment</button>
+                    </div>
+                  </div>
+                </form>
+                {%endif%}
+              </div>
+              </div>
+          </main>
+  {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
+        </div>
+      </div>
+    </section>
+
+    <div class="copyrights text-white py-4" style="background: #090909">
+      <div class="container">
+        <div class="row text-center gy-2">
+          <div class="col-md-6 text-md-start">
+            <p class="mb-0 fw-light text-sm">&copy; 2022. All rights reserved. Your great site.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0 text-sm">Template By <a class="text-reset fw-light" href="https://bootstrapious.com/p/bootstrap-blog">Bootstrapious</a>
+              <!-- Please do not remove the backlink to Bootstrap Temple unless you purchase an attribution-free license @ Bootstrap Temple or support us at http://bootstrapious.com/donate. It is part of the license conditions. Thanks for understanding :)                         -->
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+{%endblock%}
